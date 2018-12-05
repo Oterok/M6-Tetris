@@ -68,6 +68,7 @@ Tetris.prototype.LevelUP = function ()
         this.level++;
     }
 
+
     if (this.level <= 9) {
         this.velocitat = this.velocitat - 100;
     }
