@@ -6,6 +6,16 @@ var Peca = function (posX, posY, forma, color) //Quito la variable color porque 
     this.posicio = 0; //El 0 indica la posicio inicial, servira per fer les rotacions.
     this.color = color;
 };
+Peca.prototype.movimentEsquerre = function () {
+    if (this.posX > 0) {
+        this.posX--;
+    }
+};
+Peca.prototype.movimentDreta = function () {
+    if (this.posX < tetris.tablero.length-1) {
+        this.posX++;
+    }
+};
 Peca.prototype.movimentDown = function () {
     if (this.posY > 0) {
         this.posY--;
@@ -21,7 +31,7 @@ Peca.prototype.girarDreta = function () {
         this.posicio = 0;
     }
 };
-Peca.prototype.girarDreta = function () {
+Peca.prototype.girarEsquerre = function () {
     if (this.posicio > 0) {
         this.posicio--;
     } else {
