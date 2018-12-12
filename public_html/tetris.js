@@ -3,16 +3,186 @@ var Peca = function (posX, posY, forma, color) //Quito la variable color porque 
     this.posX = posX;
     this.posY = posY;
     this.forma = forma;
+    this.posicio = 0; //El 0 indica la posicio inicial, servira per fer les rotacions.
     this.color = color;
 };
-Peca.prototype.movDown = function () {
+Peca.prototype.movimentDown = function () {
     if (this.posY > 0) {
         this.posY--;
         return true;
     } else {
         return false;
     }
-}
+};
+Peca.prototype.girarDreta = function () {
+    if (this.posicio < 4) {
+        this.posicio++;
+    } else {
+        this.posicio = 0;
+    }
+};
+Peca.prototype.girarDreta = function () {
+    if (this.posicio > 0) {
+        this.posicio--;
+    } else {
+        this.posicio = 3;
+    }
+    Peca.actualizarForma();
+};
+Peca.prototype.actualizarForma = function () {
+    //Si es cuadrado 'groc', no ara falta que rote.
+    if (this.color == "blau") {
+        switch (this.posicio) {
+            case 0:
+            case 2:
+                this.forma = [
+                    [0, "l", 0, 0],
+                    [0, "l", 0, 0],
+                    [0, "l", 0, 0],
+                    [0, "l", 0, 0]];
+                break;
+            case 1:
+            case 3:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    ["l", "l", "l", "l"],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+        }
+    } else if (this.color == "verd") {
+        switch (this.posicio) {
+            case 0:
+            case 2:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    [0, "s", "s", 0],
+                    ["s", "s", 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 1:
+            case 3:
+                this.forma = [
+                    [0, "s", 0, 0],
+                    [0, "s", "s", 0],
+                    [0, 0, "s", 0],
+                    [0, 0, 0, 0]];
+                break;
+        }
+    } else if (this.color == "roig") {
+        switch (this.posicio) {
+            case 0:
+            case 2:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    [0, "z", "z", 0],
+                    [0, 0, "z", "z"],
+                    [0, 0, 0, 0]];
+                break;
+            case 1:
+            case 3:
+                this.forma = [
+                    [0, 0, "z", 0],
+                    [0, "z", "z", 0],
+                    [0, "z", 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+        }
+    } else if (this.color == "taronga") {
+        switch (this.posicio) {
+            case 0:
+                this.forma = [
+                    [0, "t", 0, 0],
+                    [0, "t", 0, 0],
+                    [0, "t", "t", 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 1:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    [0, 0, "t", 0],
+                    ["t", "t", "t", 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 2:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    [0, "t", "t", 0],
+                    [0, 0, "t", 0],
+                    [0, 0, "t", 0]];
+                break;
+            case 3:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    ["t", "t", "t", 0],
+                    ["t", 0, 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+        }
+    } else if (this.color == "lila") {
+        switch (this.posicio) {
+            case 0:
+                this.forma = [
+                    [0, 0, "j", 0],
+                    [0, 0, "j", 0],
+                    [0, "j", "j", 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 1:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    ["j", 0, 0, 0],
+                    ["j", "j", "j", 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 2:
+                this.forma = [
+                    [0, "j", "j", 0],
+                    [0, "j", 0, 0],
+                    [0, "j", 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 3:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    ["j", "j", "j", 0],
+                    [0, 0, "j", 0],
+                    [0, 0, 0, 0]];
+                break;
+        }
+    } else if (this.color == "morat") {
+        switch (this.posicio) {
+            case 0:
+                this.forma = [
+                    [0, 0, 0, 0],
+                    ["i", "i", "i", 0],
+                    [0, "i", 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 1:
+                this.forma = [
+                    [0, "i", 0, 0],
+                    ["i", "i", 0, 0],
+                    [0, "i", 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 2:
+                this.forma = [
+                    [0, "i", 0, 0],
+                    ["i", "i", "i", 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+            case 3:
+                this.forma = [
+                    [0, "i", 0, 0],
+                    [0, "i", "i", 0],
+                    [0, "i", 0, 0],
+                    [0, 0, 0, 0]];
+                break;
+        }
+    }
+};
 
 
 
@@ -145,25 +315,26 @@ var tetris = new Tetris();
 function imprimirTetris() {
     for (var x = 0; x <= tetris.tablero.length - 1; x++) {
         for (var y = 0; y <= tetris.tablero[0].length - 1; y++) {
-            if(comprobarPosPecaX(x,y)){
-                document.write(tetris.pecaActual.forma[x-tetris.pecaActual.posX][y-tetris.pecaActual.posY]);
-            }else{
+            if (comprobarPosPecaX(x, y)) {
+                document.write(tetris.pecaActual.forma[x - tetris.pecaActual.posX][y - tetris.pecaActual.posY] + "&nbsp");
+            } else {
                 document.write(tetris.tablero[x][y] + "&nbsp");
             }
         }
         document.write("</br>");
     }
-};
+}
+;
 
-function comprobarPosPecaX(x,y) {
+function comprobarPosPecaX(x, y) {
     var bool = false;
-    if (tetris.pecaActual.posX == x){
+    if (tetris.pecaActual.posX == x) {
         bool = comprobarPosPecaY(y);
-    }else if((tetris.pecaActual.posX + 1) == x){
+    } else if ((tetris.pecaActual.posX + 1) == x) {
         bool = comprobarPosPecaY(y);
-    }else if((tetris.pecaActual.posX + 2) == x){
+    } else if ((tetris.pecaActual.posX + 2) == x) {
         bool = comprobarPosPecaY(y);
-    }else if((tetris.pecaActual.posX + 3) == x){
+    } else if ((tetris.pecaActual.posX + 3) == x) {
         bool = comprobarPosPecaY(y);
     }
     return bool;
@@ -171,13 +342,13 @@ function comprobarPosPecaX(x,y) {
 
 function comprobarPosPecaY(y) {
     var bool = false;
-    if (tetris.pecaActual.posY == y){
+    if (tetris.pecaActual.posY == y) {
         bool = true;
-    }else if((tetris.pecaActual.posY + 1) == y){
+    } else if ((tetris.pecaActual.posY + 1) == y) {
         bool = true;
-    }else if((tetris.pecaActual.posY + 2) == y){
+    } else if ((tetris.pecaActual.posY + 2) == y) {
         bool = true;
-    }else if((tetris.pecaActual.posY + 3) == y){
+    } else if ((tetris.pecaActual.posY + 3) == y) {
         bool = true;
     }
     return bool;
