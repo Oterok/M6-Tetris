@@ -1,3 +1,6 @@
+
+
+
 var Peca = function (posX, posY, forma, color) //Quito la variable color porque ya esta en forma.
 {
     this.posX = posX;
@@ -12,7 +15,7 @@ Peca.prototype.movimentEsquerre = function () {
     }
 };
 Peca.prototype.movimentDreta = function () {
-    if (this.posX < tetris.tablero.length-1) {
+    if (this.posX < tetris.tablero.length - 1) {
         this.posX++;
     }
 };
@@ -248,7 +251,7 @@ Tetris.prototype.Iniciar = function ()
 Tetris.prototype.jugar = function () {
     //setInterval(peca.movDown, tetris.velocitat);
     imprimirTetris();
-    imprimirInformacio();
+    //imprimirInformacio();
 }
 Tetris.prototype.triarPecas = function ()
 {
@@ -314,7 +317,7 @@ Tetris.prototype.GeneraPecaAleatoria = function ()
     ]
 
     var numeroAleatori = Math.round(Math.random() * 6);
-    var peca = new Peca(0, Math.trunc(tetris.tablero[0].length / 2), peces[numeroAleatori][0], peces[numeroAleatori][1]);
+    var peca = new Peca(0, Math.trunc(tetris.tablero[0].length / 2) - 2, peces[numeroAleatori][0], peces[numeroAleatori][1]);
     return peca;
 };
 var tetris = new Tetris();
@@ -322,34 +325,72 @@ var tetris = new Tetris();
 
 
 function imprimirTetris() {
+    var tamañoImagen = 25;
+    var canvas = document.getElementById("espai");
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, 425, 650);
+    var img;
+    var imprimir = "";
+
     for (var x = 0; x <= tetris.tablero.length - 1; x++) {
         for (var y = 0; y <= tetris.tablero[0].length - 1; y++) {
-            if (comprobarPosPecaX(x, y)) {
-                document.write(tetris.pecaActual.forma[x - tetris.pecaActual.posX][y - tetris.pecaActual.posY] + "&nbsp");
-            } else {
-                document.write(tetris.tablero[x][y] + "&nbsp");
-            }
-        }
-        document.write("</br>");
-    }
-}
-;
 
-function comprobarPosPecaX(x, y) {
+            if (comprobarPosicioPecaX(x, y)) {
+                if (tetris.pecaActual.forma[x - tetris.pecaActual.posX][y - tetris.pecaActual.posY] != 0) {
+                    img = imprimirPixelColor(img);
+                }
+                //imprimir = imprimir + (tetris.pecaActual.forma[x - tetris.pecaActual.posX][y - tetris.pecaActual.posY] + "&nbsp");
+            } else {
+                if (tetris.tablero[x][y] == 1) {
+                    img = document.getElementById("pared");
+                } else {
+                    img = document.getElementById("fondo");
+                }
+                //imprimir = imprimir + (tetris.tablero[x][y] + "&nbsp");
+            }
+            ctx.drawImage(img, y * tamañoImagen, x * tamañoImagen, tamañoImagen, tamañoImagen);
+        }
+
+        //imprimir = imprimir + ("</br>");
+
+    }
+    //document.write(imprimir);
+}
+
+function imprimirPixelColor(img) {
+    if (tetris.pecaActual.color == "groc") {
+        img = document.getElementById("amarillo");
+    } else if (tetris.pecaActual.color == "blau") {
+        img = document.getElementById("azul");
+    } else if (tetris.pecaActual.color == "verd") {
+        img = document.getElementById("verde");
+    } else if (tetris.pecaActual.color == "roig") {
+        img = document.getElementById("red");
+    } else if (tetris.pecaActual.color == "taronga") {
+        img = document.getElementById("naranga");
+    } else if (tetris.pecaActual.color == "lila") {
+        img = document.getElementById("lila");
+    } else if (tetris.pecaActual.color == "morat") {
+        img = document.getElementById("morado");
+    }
+    return img;
+}
+
+function comprobarPosicioPecaX(x, y) {
     var bool = false;
     if (tetris.pecaActual.posX == x) {
-        bool = comprobarPosPecaY(y);
+        bool = comprobarPosicioPecaY(y);
     } else if ((tetris.pecaActual.posX + 1) == x) {
-        bool = comprobarPosPecaY(y);
+        bool = comprobarPosicioPecaY(y);
     } else if ((tetris.pecaActual.posX + 2) == x) {
-        bool = comprobarPosPecaY(y);
+        bool = comprobarPosicioPecaY(y);
     } else if ((tetris.pecaActual.posX + 3) == x) {
-        bool = comprobarPosPecaY(y);
+        bool = comprobarPosicioPecaY(y);
     }
     return bool;
 }
 
-function comprobarPosPecaY(y) {
+function comprobarPosicioPecaY(y) {
     var bool = false;
     if (tetris.pecaActual.posY == y) {
         bool = true;
@@ -363,20 +404,20 @@ function comprobarPosPecaY(y) {
     return bool;
 }
 
-function imprimirInformacio() {
-    document.write("</br>");
-    document.write('Nivell: ' + tetris.nivell + "&nbsp &nbsp &nbsp &nbsp &nbsp");
-    document.write("</br>");
-    document.write('Puntuacio: ' + tetris.puntuacio + "&nbsp &nbsp &nbsp &nbsp &nbspPuntuacio Max: " + tetris.puntuacioMax);
-    document.write("</br>");
-    document.write("</br>");
-    var peca = "";
-    for (var x = 0; x <= tetris.pecaSeguent.forma.length - 1; x++) {
-        for (var y = 0; y <= tetris.pecaSeguent.forma[0].length - 1; y++) {
-            document.write(tetris.pecaSeguent.forma[x][y]);
-        }
-        document.write("</br>");
-    }
-}
-
+//function imprimirInformacio() {
+//    document.write("</br>");
+//    document.write('Nivell: ' + tetris.nivell + "&nbsp &nbsp &nbsp &nbsp &nbsp");
+//    document.write("</br>");
+//    document.write('Puntuacio: ' + tetris.puntuacio + "&nbsp &nbsp &nbsp &nbsp &nbspPuntuacio Max: " + tetris.puntuacioMax);
+//    document.write("</br>");
+//    document.write("</br>");
+//    var peca = "";
+//    for (var x = 0; x <= tetris.pecaSeguent.forma.length - 1; x++) {
+//        for (var y = 0; y <= tetris.pecaSeguent.forma[0].length - 1; y++) {
+//            document.write(tetris.pecaSeguent.forma[x][y]);
+//        }
+//        document.write("</br>");
+//    }
+//}
 tetris.Iniciar();
+window.setInterval(imprimirTetris, 100);
