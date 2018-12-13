@@ -334,30 +334,27 @@ function imprimirTetris() {
 
     for (var x = 0; x <= tetris.tablero.length - 1; x++) {
         for (var y = 0; y <= tetris.tablero[0].length - 1; y++) {
-
-            if (comprobarPosicioPecaX(x, y)) {
-                if (tetris.pecaActual.forma[x - tetris.pecaActual.posX][y - tetris.pecaActual.posY] != 0) {
-                    img = imprimirPixelColor(img);
-                }
-                //imprimir = imprimir + (tetris.pecaActual.forma[x - tetris.pecaActual.posX][y - tetris.pecaActual.posY] + "&nbsp");
+            if (tetris.tablero[x][y] == 1) {
+                img = document.getElementById("pared");
             } else {
-                if (tetris.tablero[x][y] == 1) {
-                    img = document.getElementById("pared");
-                } else {
-                    img = document.getElementById("fondo");
-                }
-                //imprimir = imprimir + (tetris.tablero[x][y] + "&nbsp");
+                img = document.getElementById("fondo");
             }
             ctx.drawImage(img, y * tamañoImagen, x * tamañoImagen, tamañoImagen, tamañoImagen);
         }
-
-        //imprimir = imprimir + ("</br>");
-
     }
-    //document.write(imprimir);
+    
+    for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
+        for (var y = 0; y <= tetris.pecaActual.forma[0].length - 1; y++) {
+            if(tetris.pecaActual.forma[x+tetris.pecaActual.posX][y+tetris.pecaActual.posY != 0]){
+                img = imprimirPixelColor();
+                ctx.drawImage(img, y * tamañoImagen, x * tamañoImagen, tamañoImagen, tamañoImagen);
+            }
+        }
+    }
 }
 
-function imprimirPixelColor(img) {
+function imprimirPixelColor() {
+    var img;
     if (tetris.pecaActual.color == "groc") {
         img = document.getElementById("amarillo");
     } else if (tetris.pecaActual.color == "blau") {
@@ -420,4 +417,4 @@ function comprobarPosicioPecaY(y) {
 //    }
 //}
 tetris.Iniciar();
-window.setInterval(imprimirTetris, 100);
+window.setInterval(tetris.jugar, 100);
