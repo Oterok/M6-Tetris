@@ -1,11 +1,17 @@
 function notificaObservador(e) {                            
     if ((e.code == "KeyA") || (e.code == "ArrowLeft")) { 
-    }
-    if ((e.code == "KeyW") || (e.code == "ArrowUp")) { 
-    }
-    if ((e.code == "KeyS") || (e.code == "ArrowDown")) { 
-    }
-    if ((e.code == "KeyD") || (e.code == "ArrowRight")) { 
+        tetris.pecaActual.movimientoIzquierda();
+    }else if ((e.code == "KeyS") || (e.code == "ArrowDown")) { 
+        tetris.pecaActual.movimientoDown();
+        tetris.puntuacio = tetris.puntuacio + 1;
+    }else if ((e.code == "KeyD") || (e.code == "ArrowRight")) { 
+        tetris.pecaActual.movimientotDerecha();
+    }else if ((e.code == "KeyE") || (e.code == "ArrowUp")) { 
+        tetris.pecaActual.rotarDerecha();
+    }else if ((e.code == "KeyQ") || (e.code == "ArrowUp")) { 
+        tetris.pecaActual.rotarIzquierda();
+    }else if ((e.code == "KeyW") || (e.code == "ArrowUp")) { 
+        alert("STOP");
     }
 }                                                            
  var element = document.getElementById("all");                  
@@ -19,10 +25,44 @@ var Peca = function (posX, posY, forma, color) //Quito la variable color porque 
     this.posicio = 0; //El 0 indica la posicio inicial, servira per fer les rotacions.
     this.color = color;
 };
+Peca.prototype.comprobarColisioPecaRotacio = function () {
+    var puedeRotar = true;
+    for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
+        for (var y = 0; y <= tetris.pecaActual.forma[0].length - 1; y++) {
+            if ((tetris.pecaActual.forma[x][y]) != 0 && 
+                    (tetris.tablero[tetris.pecaActual.posX+x][tetris.pecaActual.posY+y] != 0)) {
+                        puedeRotar = false;
+            }
+        }
+    }
+    return puedeRotar;
+};
+Peca.prototype.comprobarColisioPecaMovimentDerecha = function () {
+    var puedeMouresDreta = true;
+    for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
+        for (var y = 0; y <= tetris.pecaActual.forma[0].length - 1; y++) {
+            if ((tetris.pecaActual.forma[x][y]) != 0 && 
+                    (tetris.tablero[tetris.pecaActual.posX+x][tetris.pecaActual.posY+y+1] != 0)) {
+                        puedeMouresDreta = false;
+            }
+        }
+    }
+    return puedeMouresDreta;
+};
+Peca.prototype.comprobarColisioPecaMovimentIzquierda = function () {
+    var puedeMouresIzquierda = true;
+    for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
+        for (var y = 0; y <= tetris.pecaActual.forma[0].length - 1; y++) {
+            if ((tetris.pecaActual.forma[x][y]) != 0 && 
+                    (tetris.tablero[tetris.pecaActual.posX+x][tetris.pecaActual.posY+y-1] != 0)) {
+                        puedeMouresIzquierda = false;
+            }
+        }
+    }
+    return puedeMouresIzquierda;
+};
 Peca.prototype.comprobarColisioPecaDown = function () {
     var puedeBajar = true;
-    var tableroX;
-    var tableroY;
     for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
         for (var y = 0; y <= tetris.pecaActual.forma[0].length - 1; y++) {
             if ((tetris.pecaActual.forma[x][y]) != 0 && 
@@ -37,39 +77,40 @@ Peca.prototype.comprobarColisioPecaDown = function () {
     }
     return puedeBajar;
 };
-Peca.prototype.movimentEsquerre = function () {
-    if (tetris.pecaActual.posY > 0) {
+Peca.prototype.movimientoIzquierda = function () {
+    if (tetris.pecaActual.comprobarColisioPecaMovimentIzquierda()) {
         tetris.pecaActual.posY--;
     }
 };
-Peca.prototype.movimentDreta = function () {
-    if (tetris.pecaActual.posX < tetris.tablero.length - 1) {
+Peca.prototype.movimientotDerecha = function () {
+    if (tetris.pecaActual.comprobarColisioPecaMovimentDerecha()) {
         tetris.pecaActual.posY++;
     }
 };
-Peca.prototype.movimentDown = function () {
+Peca.prototype.movimientoDown = function () {
     if (tetris.pecaActual.comprobarColisioPecaDown()) {
         tetris.pecaActual.posX++;
     } else {
         tetris.EliminarPeca();
     }
 };
-Peca.prototype.girarDreta = function () {
-    if (tetris.pecaActual.posicio < 4) {
+Peca.prototype.rotarDerecha = function () {
+    if (tetris.pecaActual.posicio < 3) {
         tetris.pecaActual.posicio++;
     } else {
-        tetris.pecaActual.posiciothis.posicio = 0;
+        tetris.pecaActual.posicio = 0;
     }
+    tetris.pecaActual.actualizarForma("Derecha");
 };
-Peca.prototype.girarEsquerre = function () {
+Peca.prototype.rotarIzquierda = function () {
     if (tetris.pecaActual.posicio > 0) {
         tetris.pecaActual.posicio--;
     } else {
         tetris.pecaActual.posicio = 3;
     }
-    Peca.actualizarForma();
+    tetris.pecaActual.actualizarForma("Izquierda");
 };
-Peca.prototype.actualizarForma = function () {
+Peca.prototype.actualizarForma = function (rotacio) {
     //Si es cuadrado 'groc', no ara falta que rote.
     if (tetris.pecaActual.color == "blau") {
         switch (tetris.pecaActual.posicio) {
@@ -222,6 +263,15 @@ Peca.prototype.actualizarForma = function () {
                 break;
         }
     }
+
+    if(!tetris.pecaActual.comprobarColisioPecaRotacio()){
+        if("Derecha" == rotacio){
+            tetris.pecaActual.posicio--;
+        }else if("Izquierda"== rotacio){
+            tetris.pecaActual.posicio++;
+        }
+        tetris.pecaActual.actualizarForma(rotacio);
+    }
 };
 
 
@@ -264,20 +314,42 @@ var Tetris = function ()
     this.pecaActual;
     this.pecaSeguent;
     this.contador = ["i"], ["j"], ["l"], ["o"], ["s"], ["t"], ["z"];
-    this.contadorTotal;
+    this.contadorTotal = 1;
+    this.contador["i"] = 0;
+    this.contador["j"] = 0;
+    this.contador["l"] = 0;
+    this.contador["o"] = 0;
+    this.contador["s"] = 0;
+    this.contador["t"] = 0;
+    this.contador["z"] = 0;
     this.nivell = 1;
-    this.velocitat = 200;
+    this.velocitat = 1000;
 };
 Tetris.prototype.gameOVer = function ()
 {
     tetris.tablero = tetris.tableroLimpio;
+    tetris.nivell = 1;
+    tetris.velocitat = 1000;
+    tetris.contadorTotal = 0;
+    tetris.contador["i"] = 0;
+    tetris.contador["j"] = 0;
+    tetris.contador["l"] = 0;
+    tetris.contador["o"] = 0;
+    tetris.contador["s"] = 0;
+    tetris.contador["t"] = 0;
+    tetris.contador["z"] = 0;
+    if(tetris.puntuacioMax > tetris.puntuacio){
+        tetris.puntuacioMax = tetris.puntuacio;
+    }
+    tetris.puntuacio = 0;
     alert("GAME OVER");
     tetris.Iniciar();
 };
 Tetris.prototype.Iniciar = function ()
 {
-    this.pecaActual = tetris.GeneraPecaAleatoria();
-    this.pecaSeguent = tetris.GeneraPecaAleatoria();
+    tetris.pecaActual = tetris.GeneraPecaAleatoria();
+    tetris.pecaSeguent = tetris.GeneraPecaAleatoria();
+    tetris.contador[tetris.pecaActual.forma[1][1]]++;
 };
 Tetris.prototype.EliminarPeca = function () {
     for (var x = 0; x <= tetris.pecaActual.forma.length-1; x++) {
@@ -285,39 +357,61 @@ Tetris.prototype.EliminarPeca = function () {
             if ((tetris.pecaActual.forma[x][y]) != 0) {
                 tetris.tablero[x+tetris.pecaActual.posX][y+tetris.pecaActual.posY] = tetris.pecaActual.forma[x][y];
             }
-            
         }
     }
-    
     tetris.novaPecas();
 }
 Tetris.prototype.imprimir = function () {
-    //setInterval(peca.movDown, tetris.velocitat);
     imprimirTetris();
     imprimirInformacio();
 }
 Tetris.prototype.novaPecas = function ()
 {
-    this.pecaActual = this.pecaSeguent
-    this.pecaSeguent = tetris.GeneraPecaAleatoria();
-    this.puntuacio = this.puntuacio + 10;
-};
-Tetris.prototype.LevelUP = function ()
-{
-    if ((this.contadorTotal % 10) == 0) {
-        this.level++;
+    tetris.pecaActual = tetris.pecaSeguent
+    tetris.pecaSeguent = tetris.GeneraPecaAleatoria();
+    tetris.comprobaLlineaCompleta();
+    tetris.contador[tetris.pecaActual.forma[1][1]]++;
+    tetris.contadorTotal++;
+    tetris.puntuacio = tetris.puntuacio + 10;
+    if ((tetris.contadorTotal % 10) == 0) {
+        tetris.lvelUP();
     }
-
-
-    if (this.level <= 9) {
-        this.velocitat = this.velocitat - 100;
-    }
-    this.puntuacio = this.puntuacio + 20;
 };
-Tetris.prototype.GestionTeclado = function ()
+Tetris.prototype.levelUP = function ()
 {
-    //if(tecla abaix)
-    this.puntuacio = this.puntuacio + 1;
+    tetris.level++;
+    alert("LVL:"+tetris.level);
+    if (tetris.level <= 9) {
+        tetris.velocitat = tetris.velocitat - 100;
+    }
+    tetris.puntuacio = tetris.puntuacio + 20;
+};
+Tetris.prototype.comprobaLlineaCompleta = function ()
+{
+    var lineaCompleta = 0;
+    for (var x = 0; x < tetris.tablero.length - 1; x++) {
+        for (var y = 0; y < tetris.tablero[0].length - 1; y++) {
+            if(tetris.tablero[x][y]!=0 && tetris.tablero[x][y]!=1){
+                lineaCompleta++;
+            }
+        }
+        if(lineaCompleta >= 15){
+            tetris.puntuacio = tetris.puntuacio + 100;
+            for (var y = 1; y <= tetris.tablero[0].length - 2; y++) {
+                tetris.tablero[x][y] = 0;
+            }
+            tetris.gravetatTableroDown(x-1);
+        }
+        lineaCompleta = 0;
+    }
+};
+Tetris.prototype.gravetatTableroDown = function (VarX) {
+    for (var x = VarX; x > 0 ; x--) {
+        for (var y = tetris.tablero[0].length - 2; y > 0; y--) {
+            tetris.tablero[x+1][y] = tetris.tablero[x][y];
+            tetris.tablero[x][y] = 0;
+        }
+    }
 };
 Tetris.prototype.GeneraPecaAleatoria = function ()
 {
@@ -404,7 +498,7 @@ function comprobarPosicioPecaX(x, y) {
 function comprobarPosicioPecaY(y) {
     var bool = false;
     if (tetris.pecaActual.posY == y) {
-        bool[0] = true;
+        bool = true;
     } else if ((tetris.pecaActual.posY + 1) == y) {
         bool = true;
     } else if ((tetris.pecaActual.posY + 2) == y) {
@@ -416,11 +510,25 @@ function comprobarPosicioPecaY(y) {
 }
 
 function imprimirInformacio() {
+    document.getElementById("puntuacioMax").innerHTML  = "Maxima puntuació: "+tetris.puntuacioMax;
+    document.getElementById("puntuacio").innerHTML  = "Puntuació: "+tetris.puntuacio;
+    document.getElementById("nivell").innerHTML  = "Nivell: "+tetris.nivell;
+    document.getElementById("pecasTotals").innerHTML  = "Peçes totals: "+tetris.contadorTotal;
+    document.getElementById("velocitat").innerHTML  = "Velocitat: "+tetris.velocitat;
+    document.getElementById("i").innerHTML  = "Morat (i): " + tetris.contador["i"];
+    document.getElementById("j").innerHTML  = "Lila (j): "+tetris.contador["j"];
+    document.getElementById("l").innerHTML  = "Blau (l): "+tetris.contador["l"];
+    document.getElementById("o").innerHTML  = "Groc (o): "+tetris.contador["o"];
+    document.getElementById("s").innerHTML  = "Verd (s): "+tetris.contador["s"];
+    document.getElementById("t").innerHTML  = "Taronga (t): "+tetris.contador["t"];
+    document.getElementById("z").innerHTML  = "Roig (z): "+tetris.contador["z"];
+    
     var tamañoImagen = 25;
     var canvas = document.getElementById("seguent");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, 100, 100);
     var img;
+
     for (var x = 0; x <= tetris.pecaSeguent.forma.length - 1; x++) {
         for (var y = 0; y <= tetris.pecaSeguent.forma[0].length - 1; y++) {
             if ((tetris.pecaSeguent.forma[x][y]) != 0) {
@@ -497,25 +605,8 @@ function imprimirPixelColorPecaSeguent() {
     }
     return img;
 }
-
-
-//function imprimirInformacio() {
-//    document.write("</br>");
-//    document.write('Nivell: ' + tetris.nivell + "&nbsp &nbsp &nbsp &nbsp &nbsp");
-//    document.write("</br>");
-//    document.write('Puntuacio: ' + tetris.puntuacio + "&nbsp &nbsp &nbsp &nbsp &nbspPuntuacio Max: " + tetris.puntuacioMax);
-//    document.write("</br>");
-//    document.write("</br>");
-//    var peca = "";
-//    for (var x = 0; x <= tetris.pecaSeguent.forma.length - 1; x++) {
-//        for (var y = 0; y <= tetris.pecaSeguent.forma[0].length - 1; y++) {
-//            document.write(tetris.pecaSeguent.forma[x][y]);
-//        }
-//        document.write("</br>");
-//    }
-//}
 tetris.Iniciar();
-window.setInterval(tetris.pecaActual.movimentDown, tetris.velocitat);
-window.setInterval(tetris.imprimir, 100);
+window.setInterval(tetris.pecaActual.movimientoDown, tetris.velocitat);
+window.setInterval(tetris.imprimir, 50);
 
 
