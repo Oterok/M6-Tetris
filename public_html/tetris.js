@@ -1,3 +1,5 @@
+
+//Este funcion/evento es el encargado de detectar que botón se  presiona y las conseqüencias que tiene.
 function notificaObservador(e) {                            
     if ((e.code == "KeyA") || (e.code == "ArrowLeft")) { 
         tetris.pecaActual.movimientoIzquierda();
@@ -17,6 +19,7 @@ function notificaObservador(e) {
  var element = document.getElementById("all");                  
  element.addEventListener("keydown", notificaObservador);
 
+//Objeto pieza, contiene la posicion, la forma y el color
 var Peca = function (posX, posY, forma, color) //Quito la variable color porque ya esta en forma.
 {
     this.posX = posX;
@@ -25,6 +28,7 @@ var Peca = function (posX, posY, forma, color) //Quito la variable color porque 
     this.posicio = 0; //El 0 indica la posicio inicial, servira per fer les rotacions.
     this.color = color;
 };
+//Este metodo comprueba la colision antes de rotar la pieza y da 'permisos' para que se pueda hacer.
 Peca.prototype.comprobarColisioPecaRotacio = function () {
     var puedeRotar = true;
     for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
@@ -37,6 +41,7 @@ Peca.prototype.comprobarColisioPecaRotacio = function () {
     }
     return puedeRotar;
 };
+//Este metodo comprueba la colision antes de que la pieza se mueva a la derecha y da 'permisos' para que se pueda hacer.
 Peca.prototype.comprobarColisioPecaMovimentDerecha = function () {
     var puedeMouresDreta = true;
     for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
@@ -49,6 +54,7 @@ Peca.prototype.comprobarColisioPecaMovimentDerecha = function () {
     }
     return puedeMouresDreta;
 };
+//Este metodo comprueba la colision antes de que la pieza se mueva a la izquierda y da 'permisos' para que se pueda hacer.
 Peca.prototype.comprobarColisioPecaMovimentIzquierda = function () {
     var puedeMouresIzquierda = true;
     for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
@@ -61,6 +67,7 @@ Peca.prototype.comprobarColisioPecaMovimentIzquierda = function () {
     }
     return puedeMouresIzquierda;
 };
+//Este metodo comprueba la colision antes de que la pieza se mueva hacia abajo y da 'permisos' para que se pueda hacer.
 Peca.prototype.comprobarColisioPecaDown = function () {
     var puedeBajar = true;
     for (var x = 0; x <= tetris.pecaActual.forma.length - 1; x++) {
@@ -68,7 +75,7 @@ Peca.prototype.comprobarColisioPecaDown = function () {
             if ((tetris.pecaActual.forma[x][y]) != 0 && 
                     (tetris.tablero[tetris.pecaActual.posX+x+1][tetris.pecaActual.posY+y] != 0)) {
                         if(tetris.pecaActual.posX+x+1 == 1){
-                            tetris.gameOVer();
+                            tetris.gameOver();
                         }else{
                             puedeBajar = false;
                         }  
@@ -77,16 +84,19 @@ Peca.prototype.comprobarColisioPecaDown = function () {
     }
     return puedeBajar;
 };
+//Modifica la variable que permite mover la pieza a la izquierda
 Peca.prototype.movimientoIzquierda = function () {
     if (tetris.pecaActual.comprobarColisioPecaMovimentIzquierda()) {
         tetris.pecaActual.posY--;
     }
 };
+//Modifica la variable que permite mover la pieza a la derecha
 Peca.prototype.movimientotDerecha = function () {
     if (tetris.pecaActual.comprobarColisioPecaMovimentDerecha()) {
         tetris.pecaActual.posY++;
     }
 };
+//Modifica la variable que permite mover la pieza hacia abajo.
 Peca.prototype.movimientoDown = function () {
     if (tetris.pecaActual.comprobarColisioPecaDown()) {
         tetris.pecaActual.posX++;
@@ -94,6 +104,7 @@ Peca.prototype.movimientoDown = function () {
         tetris.EliminarPeca();
     }
 };
+//Modifica la variable que permite rotar la pieza a la derecha
 Peca.prototype.rotarDerecha = function () {
     if (tetris.pecaActual.posicio < 3) {
         tetris.pecaActual.posicio++;
@@ -102,6 +113,7 @@ Peca.prototype.rotarDerecha = function () {
     }
     tetris.pecaActual.actualizarForma("Derecha");
 };
+//Modifica la variable que permite rotar la pieza a la izquierda
 Peca.prototype.rotarIzquierda = function () {
     if (tetris.pecaActual.posicio > 0) {
         tetris.pecaActual.posicio--;
@@ -276,6 +288,7 @@ Peca.prototype.actualizarForma = function (rotacio) {
 
 
 //-----------------------------------------------------------------------------------------------------------------------------
+//Este es el objeto que contiene las bases del juego, ya sean las variables que permiten que el juego funciona como los metodos necesarios para jugarlo.
 var Tetris = function ()
 {
     this.tableroLimpio = [
@@ -325,7 +338,8 @@ var Tetris = function ()
     this.nivell = 1;
     this.velocitat = 1000;
 };
-Tetris.prototype.gameOVer = function ()
+//El metodo gameOver, muestra un alert de fin de juego, y reinicia la variables del juego para volver a ajugar.
+Tetris.prototype.gameOver = function ()
 {
     tetris.tablero = tetris.tableroLimpio;
     tetris.nivell = 1;
@@ -345,12 +359,14 @@ Tetris.prototype.gameOVer = function ()
     alert("GAME OVER");
     tetris.Iniciar();
 };
+//Iniciar genera las dos piezas necesarias para jugar, y aumenta el contador de la pieza pertinete.
 Tetris.prototype.Iniciar = function ()
 {
     tetris.pecaActual = tetris.GeneraPecaAleatoria();
     tetris.pecaSeguent = tetris.GeneraPecaAleatoria();
     tetris.contador[tetris.pecaActual.forma[1][1]]++;
 };
+//EliminarPeca iguala al tablero la pieza para que se imprima la pieza de forma permantente en el tabelro.
 Tetris.prototype.EliminarPeca = function () {
     for (var x = 0; x <= tetris.pecaActual.forma.length-1; x++) {
         for (var y = 0; y <= tetris.pecaActual.forma[0].length-1; y++) {
@@ -360,11 +376,16 @@ Tetris.prototype.EliminarPeca = function () {
         }
     }
     tetris.novaPecas();
-}
+};
+//imprimir crida a les funcions globas per imrpimir el taulell y la informació.
 Tetris.prototype.imprimir = function () {
     imprimirTetris();
     imprimirInformacio();
-}
+};
+/*
+ * NovesPecas iguala la siguiente pieza a la actual, genera una nueva pieza en peca seguent
+ * hace la llamada para comprobar si la linea esta completa, actualizar contadores, y el nivel
+ */
 Tetris.prototype.novaPecas = function ()
 {
     tetris.pecaActual = tetris.pecaSeguent
@@ -377,6 +398,7 @@ Tetris.prototype.novaPecas = function ()
         tetris.lvelUP();
     }
 };
+//levelUP aumenta el nivel y la puntuacion
 Tetris.prototype.levelUP = function ()
 {
     tetris.level++;
@@ -386,6 +408,9 @@ Tetris.prototype.levelUP = function ()
     }
     tetris.puntuacio = tetris.puntuacio + 20;
 };
+/*comprobaLlineaCompleta mira por todo el tablero si la linea esta completa,
+ * En caso de que sea verdad, la elimina, actualiza la puntuación y llama a gravetatTableroDown
+*/
 Tetris.prototype.comprobaLlineaCompleta = function ()
 {
     var lineaCompleta = 0;
@@ -405,6 +430,9 @@ Tetris.prototype.comprobaLlineaCompleta = function ()
         lineaCompleta = 0;
     }
 };
+/*gravetatTableroDown repasa todo el tablero a partir de la posición de la pieza eliminada,
+ * hacia arriba y si la pieza de la posición concreta puede bajar, lo ara.
+ */
 Tetris.prototype.gravetatTableroDown = function (VarX) {
     for (var x = VarX; x > 0 ; x--) {
         for (var y = tetris.tablero[0].length - 2; y > 0; y--) {
@@ -460,7 +488,12 @@ Tetris.prototype.GeneraPecaAleatoria = function ()
 var tetris = new Tetris();
 
 
-
+/*
+ * imprimirTetris imprime el tablero en el canvas espai. 
+ * Empieza por imprimir todo tablero, despues comprueba si la posición de los for
+ * esta en la pieza actual con comprobarPosicioPecaX y comprobarPosicioPecaY, 
+ * despues comprueba si esta posición contiena la pieza, si es así la imprime.
+ */
 function imprimirTetris() {
     var tamañoImagen = 25;
     var canvas = document.getElementById("espai");
@@ -480,7 +513,10 @@ function imprimirTetris() {
         }
     }
 }
-
+/*
+ * comprobarPosicioPecaX y comprobarPosicioPecaY Miran si los for de imprimirTetris
+ * estan dentro de la variable forma, del objeto peca. Concretamente la pieza actual.
+ */
 function comprobarPosicioPecaX(x, y) {
     var bool = false;
     if (tetris.pecaActual.posX == x) {
@@ -509,6 +545,7 @@ function comprobarPosicioPecaY(y) {
     return bool;
 }
 
+//
 function imprimirInformacio() {
     document.getElementById("puntuacioMax").innerHTML  = "Maxima puntuació: "+tetris.puntuacioMax;
     document.getElementById("puntuacio").innerHTML  = "Puntuació: "+tetris.puntuacio;
@@ -541,7 +578,7 @@ function imprimirInformacio() {
         }
     }
 }
-
+//Comprubea que imagen imprimir del tablero.
 function impimirTablero(x,y) {
     var img;
     if (tetris.tablero[x][y] == "o") {
@@ -565,7 +602,7 @@ function impimirTablero(x,y) {
     }
     return img;
 }
-
+//Comprubea que imagen imprimir del form, de la pecaactual.
 function imprimirPixelColorPecaActual() {
     var img;
     if (tetris.pecaActual.color == "groc") {
@@ -585,7 +622,7 @@ function imprimirPixelColorPecaActual() {
     }
     return img;
 }
-
+//Comprubea que imagen imprimir de la peca seguent.
 function imprimirPixelColorPecaSeguent() {
     var img;
     if (tetris.pecaSeguent.color == "groc") {
